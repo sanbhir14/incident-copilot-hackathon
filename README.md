@@ -18,6 +18,7 @@ POC SRE copilot untuk triage alert 4xx/5xx. Service ini bisa jalan full local un
 │   ├── bedrock.py          # Bedrock invoke + fallback deterministic
 │   ├── datadog_client.py   # Datadog evidence fetch + synthetic fallback
 │   ├── main.py             # FastAPI app and endpoints
+│   ├── mcp_server.py       # local Datadog MCP server for tool calls
 │   ├── metrics.py          # lightweight DogStatsD sender
 │   ├── prompts.py          # incident prompt
 │   └── scenarios.py        # scripted incident fixtures
@@ -25,6 +26,7 @@ POC SRE copilot untuk triage alert 4xx/5xx. Service ini bisa jalan full local un
 │   └── fire_incident.sh    # generate 5xx/slow requests
 ├── terraform/              # optional EC2 skeleton
 ├── docker-compose.yml
+├── mcp.json
 ├── requirements.txt
 └── .env.example
 ```
@@ -108,6 +110,31 @@ DD_AGENT_HOST=127.0.0.1
 DD_DOGSTATSD_PORT=8125
 ```
 
+## Datadog MCP Server
+
+Repo ini menyediakan MCP server lokal di `app/mcp_server.py`. Tujuannya untuk demo tool calls:
+
+- `collect_incident_evidence`
+- `search_error_logs`
+- `query_service_metrics`
+
+Run MCP server:
+
+```bash
+python -m app.mcp_server
+```
+
+Config MCP client ada di `mcp.json`. Untuk local demo tanpa Datadog key, tools akan memakai synthetic evidence. Untuk Datadog real, isi env:
+
+```bash
+export DATADOG_SITE=datadoghq.com
+export DD_API_KEY=...
+export DD_APP_KEY=...
+python -m app.mcp_server
+```
+
+Catatan: kalau panitia menyediakan Datadog MCP server official, pakai official server itu dan jadikan file ini fallback/demo wrapper.
+
 Dashboard yang perlu dibuat:
 
 - App error rate, 4xx, 5xx.
@@ -146,4 +173,3 @@ Narasi singkat:
    - next actions
    - draft postmortem
 5. Tunjukkan dashboard AI observability: Bedrock call, latency, confidence, feedback.
-

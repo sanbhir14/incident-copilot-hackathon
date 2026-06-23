@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "datadog-incident-copilot": {
+      "command": "python",
+      "args": ["-m", "app.mcp_server"],
+      "env": {
+        "DATADOG_SITE": "datadoghq.com",
+        "DD_API_KEY": "",
+        "DD_APP_KEY": ""
+      }
+    }
+  }
+}
